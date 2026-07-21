@@ -184,50 +184,53 @@ try {
         </button>
     </div>
 
-    <!-- Section Accès rapide aux fonctionnalités clés -->
+    <!-- Section Accès rapide aux fonctionnalités clés (Alternance Bleu & Jaune) -->
     <div class="row g-4 mb-5">
+        <!-- 1. Bleu -->
         <div class="col-md-4">
-            <div class="card h-100 shadow-sm border border-danger bg-dark text-white text-center p-3">
+            <div class="card h-100 shadow-sm border border-primary bg-primary text-white text-center p-3">
                 <div class="card-body">
-                    <div class="mb-3 text-danger fs-1"><i class="fas fa-user-plus"></i></div>
+                    <div class="mb-3 text-warning fs-1"><i class="fas fa-user-plus"></i></div>
                     <h3 class="card-title h5 fw-bold text-white">Gestion des Adhérents</h3>
                     <p class="card-text text-light">Inscrivez de nouveaux membres, suivez leurs abonnements et accédez à leurs dossiers détaillés.</p>
-                    <a href="adherents.php" class="btn btn-danger mt-2 fw-bold">Espace Adhérents</a>
+                    <a href="adherents.php" class="btn btn-warning text-dark mt-2 fw-bold">Espace Adhérents</a>
                 </div>
             </div>
         </div>
+        <!-- 2. Jaune -->
         <div class="col-md-4">
-            <div class="card h-100 shadow-sm border border-danger bg-dark text-white text-center p-3">
+            <div class="card h-100 shadow-sm border border-warning bg-warning text-dark text-center p-3">
                 <div class="card-body">
-                    <div class="mb-3 text-danger fs-1"><i class="fas fa-file-invoice-dollar"></i></div>
-                    <h3 class="card-title h5 fw-bold text-white">Facturation & Stocks</h3>
-                    <p class="card-text text-light">Générez des factures et contrôlez automatiquement la décrémentation des stocks de la boutique.</p>
-                    <a href="factures.php" class="btn btn-outline-danger text-white mt-2 fw-bold">Gérer les Factures</a>
+                    <div class="mb-3 text-primary fs-1"><i class="fas fa-file-invoice-dollar"></i></div>
+                    <h3 class="card-title h5 fw-bold text-dark">Facturation & Stocks</h3>
+                    <p class="card-text text-dark">Générez des factures et contrôlez automatiquement la décrémentation des stocks de la boutique.</p>
+                    <a href="factures.php" class="btn btn-primary text-white mt-2 fw-bold">Gérer les Factures</a>
                 </div>
             </div>
         </div>
+        <!-- 3. Bleu -->
         <div class="col-md-4">
-            <div class="card h-100 shadow-sm border border-danger bg-dark text-white text-center p-3">
+            <div class="card h-100 shadow-sm border border-primary bg-primary text-white text-center p-3">
                 <div class="card-body">
-                    <div class="mb-3 text-danger fs-1"><i class="fas fa-calendar-alt"></i></div>
+                    <div class="mb-3 text-warning fs-1"><i class="fas fa-calendar-alt"></i></div>
                     <h3 class="card-title h5 fw-bold text-white">Calendrier & Planning</h3>
                     <p class="card-text text-light">Consultez l'emploi du temps des cours, des sessions d'arts martiaux et des programmes de fitness.</p>
-                    <a href="calendrier.php" class="btn btn-danger mt-2 fw-bold">Voir le calendrier</a>
+                    <a href="calendrier.php" class="btn btn-warning text-dark mt-2 fw-bold">Voir le calendrier</a>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Section Calendriers & Événements -->
+    <!-- Section Calendriers & Événements (Thème Bleu & Jaune) -->
     <div class="row mb-5">
         <div class="col-md-12">
-            <div class="card shadow-sm border border-danger bg-dark text-white">
+            <div class="card shadow-sm border border-primary bg-dark text-white">
                 <div class="card-body p-4">
-                    <h3 class="card-title mb-3 text-danger"><i class="fas fa-calendar-check"></i> Calendrier des Séances & Événements</h3>
+                    <h3 class="card-title mb-3 text-warning"><i class="fas fa-calendar-check text-warning"></i> Calendrier des Séances & Événements</h3>
                     <p class="text-light">Récapitulatif des cours de la semaine et des stages programmés à Sacré-Cœur 3 VDN.</p>
                     <div class="table-responsive">
-                        <table class="table table-dark table-striped table-bordered border-danger align-middle">
-                            <thead class="bg-danger text-white">
+                        <table class="table table-dark table-striped table-bordered border-primary align-middle">
+                            <thead class="bg-primary text-warning">
                                 <tr>
                                     <th>Jour</th>
                                     <th>Discipline</th>
