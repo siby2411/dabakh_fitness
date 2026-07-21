@@ -1,38 +1,42 @@
 <?php
 require_once 'config/database.php';
 include 'header.php';
-$database = new Database();
-$db = $database->getConnection();
-
-// Statistiques par discipline
-$query = "SELECT discipline_principale, COUNT(*) as total FROM adherents GROUP BY discipline_principale";
-$stats_discipline = $db->query($query)->fetchAll(PDO::FETCH_ASSOC);
+$db = (new Database())->getConnection();
 ?>
 
-<div class="container">
-    <div class="card">
-        <div class="card-header">
-            <h3><i class="fas fa-chart-line"></i> Statistiques Globales</h3>
-        </div>
-        <div class="card-body">
-            <canvas id="disciplineChart" height="100"></canvas>
-        </div>
-    </div>
-</div>
+<div class="container mt-4">
+    <h2><i class="fas fa-chart-line"></i> Tableau de Bord - Statistiques Globales</h2>
+    <hr>
+    <?php
+    try {
+        $stmt = $db->query("SELECT d.nom AS discipline, COUNT(a.id) AS total_adherents, SUM(p.montant) AS ca 
+                            FROM disciplines d 
+                            LEFT JOIN adherents a ON d.id = a.discipline_id 
+                            LEFT JOIN paiements p ON a.id = p.adherent_id 
+                            GROUP BY d.id, d.nom");
+        $stats = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-<script>
-const ctx = document.getElementById('disciplineChart').getContext('2d');
-new Chart(ctx, {
-    type: 'bar',
-    data: {
-        labels: <?= json_encode(array_column($stats_discipline, 'discipline_principale')) ?>,
-        datasets: [{
-            label: 'Nombre d\'adhérents',
-            data: <?= json_encode(array_column($stats_discipline, 'total')) ?>,
-            backgroundColor: 'rgba(255,75,43,0.6)'
-        }]
+        if (empty($stats)) {
+            echo "<div class='alert alert-warning'>Aucune donnée statistique disponible pour le moment.</div>";
+        } else {
+            echo '<table class="table table-bordered table-striped mt-3">
+                    <thead class="table-dark">
+                        <tr><th>Discipline / Catégorie</th><th>Total Adhérents</th><th>Chiffre d\'Affaires</th></tr>
+                    </thead>
+                    <tbody>';
+            foreach($stats as $row) {
+                echo "<tr>
+                        <td>" . htmlspecialchars($row['discipline']) . "</td>
+                        <td>" . $row['total_adherents'] . "</td>
+                        <td>" . number_format($row['ca'] ?? 0, 0, ',', ' ') . " F</td>
+                      </tr>";
+            }
+            echo '</tbody></table>';
+        }
+    } catch (PDOException $e) {
+        echo "<div class='alert alert-danger'>Erreur de chargement des statistiques : " . $e->getMessage() . "</div>";
     }
-});
-</script>
+    ?>
+</div>
 
 <?php include 'footer.php'; ?>
