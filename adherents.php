@@ -1,6 +1,7 @@
 <?php
 require_once 'config/database.php';
 include 'header.php';
+<<<<<<< HEAD
 $database = new Database();
 $db = $database->getConnection();
 
@@ -13,6 +14,15 @@ $base_url = $protocol . "://" . $host . ($uri_path == '/' || $uri_path == '\\' ?
 if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['action']) && $_POST['action'] == 'add') {
     $numero_licence = 'OM-' . date('Y') . '-' . rand(1000, 9999);
     $query = "INSERT INTO adherents (numero_licence, nom, prenom, email, telephone, date_naissance, adresse, discipline_principale)
+=======
+
+$database = new Database();
+$db = $database->getConnection();
+
+if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['action']) && $_POST['action'] == 'add') {
+    $numero_licence = 'OM-' . date('Y') . '-' . rand(1000, 9999);
+    $query = "INSERT INTO adherents (numero_licence, nom, prenom, email, telephone, date_naissance, adresse, discipline_principale) 
+>>>>>>> 22260c2b04fdb4ab1186f5a6c5813140cdd7ade5
               VALUES (:num, :nom, :prenom, :email, :tel, :naissance, :adresse, :discipline)";
     $stmt = $db->prepare($query);
     $stmt->execute([
@@ -25,11 +35,15 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['action']) && $_POST['a
         ':adresse' => $_POST['adresse'],
         ':discipline' => $_POST['discipline_principale']
     ]);
+<<<<<<< HEAD
     
     // URL complète pointant directement vers donner_avis.php avec la licence
     $url_avis = $base_url . "/donner_avis.php?licence=" . $numero_licence;
     $success = "Adhérent ajouté avec succès ! Licence : <strong>" . $numero_licence . "</strong>";
     $success_qr = "https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=" . urlencode($url_avis);
+=======
+    $success = "Adhérent ajouté! Licence: " . $numero_licence;
+>>>>>>> 22260c2b04fdb4ab1186f5a6c5813140cdd7ade5
 }
 
 $page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
@@ -50,6 +64,7 @@ $total_pages = ceil($total / $limit);
 
 <div class="container">
     <div class="card">
+<<<<<<< HEAD
         <div class="card-header d-flex justify-content-between align-items-center">
             <h3><i class="fas fa-users"></i> Gestion des Adhérents & QR Codes</h3>
             <a href="avis_admin.php" class="btn btn-sm btn-warning"><i class="fas fa-comments"></i> Gérer les Avis</a>
@@ -94,25 +109,56 @@ $total_pages = ceil($total / $limit);
                         <?php foreach($adherents as $a): 
                             $url_qr_adherent = $base_url . "/donner_avis.php?licence=" . $a['numero_licence'];
                         ?>
+=======
+        <div class="card-header">
+            <h3><i class="fas fa-users"></i> Gestion des Adhérents</h3>
+        </div>
+        <div class="card-body">
+            <?php if(isset($success)): ?>
+                <div class="alert alert-success"><?= $success ?></div>
+            <?php endif; ?>
+            
+            <button class="btn btn-primary mb-3" data-bs-toggle="modal" data-bs-target="#addAdherentModal">
+                <i class="fas fa-plus"></i> Nouvel Adhérent
+            </button>
+            
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead>
+                        <tr><th>Licence</th><th>Nom & Prénom</th><th>Email</th><th>Téléphone</th><th>Discipline</th><th>Inscription</th><th>Actions</th></tr>
+                    </thead>
+                    <tbody>
+                        <?php foreach($adherents as $a): ?>
+>>>>>>> 22260c2b04fdb4ab1186f5a6c5813140cdd7ade5
                         <tr>
                             <td><strong><?= $a['numero_licence'] ?></strong></td>
                             <td><?= htmlspecialchars($a['prenom'] . ' ' . $a['nom']) ?></td>
                             <td><?= htmlspecialchars($a['email']) ?></td>
                             <td><?= $a['telephone'] ?></td>
                             <td><span class="badge bg-info"><?= $a['discipline_principale'] ?></span></td>
+<<<<<<< HEAD
                             <td>
                                 <img src="https://api.qrserver.com/v1/create-qr-code/?size=50x50&data=<?= urlencode($url_qr_adherent) ?>" alt="QR">
                             </td>
                             <td>
                                 <a href="adherent_details.php?id=<?= $a['id'] ?>" class="btn btn-sm btn-info" title="Détails"><i class="fas fa-eye"></i></a>
                                 <a href="envoyer_qrcode.php?id=<?= $a['id'] ?>" class="btn btn-sm btn-warning" title="Envoyer le QR Code par Email" onclick="return confirm('Envoyer le QR code par e-mail à <?= htmlspecialchars($a['email']) ?> ?');"><i class="fas fa-envelope"></i></a>
+=======
+                            <td><?= date('d/m/Y', strtotime($a['date_inscription'])) ?></td>
+                            <td>
+                                <a href="adherent_details.php?id=<?= $a['id'] ?>" class="btn btn-sm btn-info"><i class="fas fa-eye"></i></a>
+>>>>>>> 22260c2b04fdb4ab1186f5a6c5813140cdd7ade5
                             </td>
                         </tr>
                         <?php endforeach; ?>
                     </tbody>
                 </table>
             </div>
+<<<<<<< HEAD
 
+=======
+            
+>>>>>>> 22260c2b04fdb4ab1186f5a6c5813140cdd7ade5
             <?php if($total_pages > 1): ?>
             <nav><ul class="pagination"><?php for($i=1;$i<=$total_pages;$i++): ?>
                 <li class="page-item <?= $i==$page?'active':'' ?>"><a class="page-link" href="?page=<?= $i ?>"><?= $i ?></a></li>
