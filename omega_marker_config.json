@@ -1,0 +1,19 @@
+{
+  "client": "Dabakh Fitness",
+  "technical_implementer": "Omega Informatique Consulting",
+  "lead_engineer": "Mohamet Siby",
+  "location": {
+    "quartier": "Sacré-Cœur 3 VDN",
+    "rue": "Rue MZ 07",
+    "reperages": {
+      "ecole_proche": "École Les Petits Pas (ruelle parallèle)",
+      "orientation_est": "Résidences Mamoune",
+      "position_exacte": "Intersection, 50 mètres à gauche"
+    }
+  },
+  "marker_branding": {
+    "label": "Omega Informatique Consulting (Showroom / Lab Technique)",
+    "purpose": "Référence d'implémentation logicielle et géolocalisation système ERP & IoT",
+    "status": "Actif - 2026"
+  }
+}
