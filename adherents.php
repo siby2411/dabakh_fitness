@@ -15,23 +15,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if ($action === 'delete') {
         $id = intval($_POST['id'] ?? 0);
         try {
-            // Désactiver temporairement les vérifications de clés étrangères pour cette session de suppression
             $db->exec("SET FOREIGN_KEY_CHECKS = 0");
             $db->beginTransaction();
 
-            // 1. Supprimer les présences liées
             $stmt_pres = $db->prepare("DELETE FROM presences WHERE adherent_id = ?");
             $stmt_pres->execute([$id]);
 
-            // 2. Supprimer les paiements liés
             $stmt_pay = $db->prepare("DELETE FROM paiements WHERE adherent_id = ?");
             $stmt_pay->execute([$id]);
 
-            // 3. Supprimer les inscriptions liées
             $stmt_ins = $db->prepare("DELETE FROM inscriptions WHERE adherent_id = ?");
             $stmt_ins->execute([$id]);
 
-            // 4. Supprimer l'adhérent
             $stmt = $db->prepare("DELETE FROM adherents WHERE id = ?");
             $stmt->execute([$id]);
 
@@ -91,20 +86,66 @@ $base_url = "http://127.0.0.1:8000/donner_avis.php?numero_licence=";
     <title>Dabakh Fitness - Gestion des Adhérents</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* Styles spécifiques pour l'impression de la carte de membre */
+        @media print {
+            body * {
+                visibility: hidden !important;
+            }
+            #printArea, #printArea * {
+                visibility: visible !important;
+            }
+            #printArea {
+                position: fixed;
+                left: 50%;
+                top: 50%;
+                transform: translate(-50%, -50%);
+                display: block !important;
+                margin: 0;
+                padding: 0;
+            }
+            .no-print {
+                display: none !important;
+            }
+        }
+        .member-card {
+            width: 420px;
+            border-radius: 20px;
+            background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+            color: white;
+            border: 2px solid #dc3545;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            overflow: hidden;
+            position: relative;
+        }
+        .member-card::before {
+            content: '';
+            position: absolute;
+            top: -50px;
+            right: -50px;
+            width: 150px;
+            height: 150px;
+            background: rgba(220, 53, 69, 0.15);
+            border-radius: 50%;
+            z-index: 1;
+        }
+    </style>
 </head>
 <body class="bg-light">
     <div class="container my-5">
-        <div class="d-flex justify-content-between mb-4">
+        <div class="d-flex justify-content-between mb-4 no-print">
             <h2 class="fw-bold text-danger"><i class="fas fa-users"></i> Dabakh Fitness</h2>
-            <button class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#adherentModal" onclick="resetForm()">
-                <i class="fas fa-user-plus"></i> Nouvel Adhérent
-            </button>
+            <div>
+                <button class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#adherentModal" onclick="resetForm()">
+                    <i class="fas fa-user-plus"></i> Nouvel Adhérent
+                </button>
+            </div>
         </div>
 
-        <?php if ($message): ?><div class="alert alert-success"><?= htmlspecialchars($message) ?></div><?php endif; ?>
-        <?php if ($error): ?><div class="alert alert-danger"><?= htmlspecialchars($error) ?></div><?php endif; ?>
+        <?php if ($message): ?><div class="alert alert-success no-print"><?= htmlspecialchars($message) ?></div><?php endif; ?>
+        <?php if ($error): ?><div class="alert alert-danger no-print"><?= htmlspecialchars($error) ?></div><?php endif; ?>
 
-        <div class="card shadow border-0">
+        <div class="card shadow border-0 no-print">
             <div class="card-header bg-dark text-white">Liste des Licences (<?= count($adherents) ?>)</div>
             <div class="table-responsive">
                 <table class="table table-hover align-middle mb-0">
@@ -124,7 +165,6 @@ $base_url = "http://127.0.0.1:8000/donner_avis.php?numero_licence=";
                             $qr_src = "https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=" . urlencode($url);
                             $safe_filename = 'QR_' . preg_replace('/[^A-Za-z0-9_\-]/', '_', $licence) . '.png';
                             
-                            // Nettoyage et formatage du numéro de téléphone pour WhatsApp (suppression des espaces, tirets, etc.)
                             $phone_clean = preg_replace('/[^0-9]/', '', $adh['telephone'] ?? '');
                             $whatsapp_msg = urlencode("Bonjour " . $adh['prenom'] . ", voici votre QR Code Dabakh Fitness (Licence : " . $licence . ") : " . $qr_src);
                             $whatsapp_url = "https://wa.me/" . $phone_clean . "?text=" . $whatsapp_msg;
@@ -134,18 +174,19 @@ $base_url = "http://127.0.0.1:8000/donner_avis.php?numero_licence=";
                                 <td><?= htmlspecialchars($adh['nom'] . ' ' . $adh['prenom']) ?></td>
                                 <td><?= htmlspecialchars($adh['email']) ?><br><small class="text-muted"><?= htmlspecialchars($adh['telephone']) ?></small></td>
                                 <td>
-                                    <img src="<?= $qr_src ?>" style="width: 50px;" class="border p-1">
-                                    <a href="<?= $qr_src ?>" download="<?= $safe_filename ?>" class="btn btn-sm btn-link" title="Télécharger le QR Code"><i class="fas fa-download"></i></a>
+                                    <img src="<?= $qr_src ?>" style="width: 50px;" class="border p-1 bg-white">
+                                    <a href="<?= $qr_src ?>" download="<?= $safe_filename ?>" class="btn btn-sm btn-link" title="Télécharger"><i class="fas fa-download"></i></a>
                                     <?php if (!empty($phone_clean)): ?>
-                                        <a href="<?= $whatsapp_url ?>" target="_blank" class="btn btn-sm btn-success text-white" title="Envoyer par WhatsApp"><i class="fab fa-whatsapp"></i></a>
+                                        <a href="<?= $whatsapp_url ?>" target="_blank" class="btn btn-sm btn-success text-white" title="WhatsApp"><i class="fab fa-whatsapp"></i></a>
                                     <?php endif; ?>
                                 </td>
                                 <td class="text-end">
-                                    <button class="btn btn-sm btn-outline-primary" onclick='editAdherent(<?= json_encode($adh) ?>)'><i class="fas fa-edit"></i></button>
-                                    <form action="" method="POST" class="d-inline" onsubmit="return confirm('Confirmer la suppression de cet adhérent et de ses données ?');">
+                                    <button class="btn btn-sm btn-outline-dark" onclick='printCard(<?= json_encode($adh) ?>, "<?= $qr_src ?>")' title="Imprimer la carte"><i class="fas fa-id-card"></i></button>
+                                    <button class="btn btn-sm btn-outline-primary" onclick='editAdherent(<?= json_encode($adh) ?>)' title="Modifier"><i class="fas fa-edit"></i></button>
+                                    <form action="" method="POST" class="d-inline" onsubmit="return confirm('Confirmer la suppression ?');">
                                         <input type="hidden" name="action" value="delete">
                                         <input type="hidden" name="id" value="<?= $adh['id'] ?>">
-                                        <button type="submit" class="btn btn-sm btn-outline-danger"><i class="fas fa-trash"></i></button>
+                                        <button type="submit" class="btn btn-sm btn-outline-danger" title="Supprimer"><i class="fas fa-trash"></i></button>
                                     </form>
                                 </td>
                             </tr>
@@ -156,7 +197,46 @@ $base_url = "http://127.0.0.1:8000/donner_avis.php?numero_licence=";
         </div>
     </div>
 
-    <!-- Modal -->
+    <!-- Zone dédiée à l'affichage et l'impression de la carte modernisée -->
+    <div id="printArea" class="d-none my-4">
+        <div class="member-card p-4 mx-auto">
+            <div class="d-flex justify-content-between align-items-center border-bottom border-secondary pb-3 mb-3 position-relative" style="z-index: 2;">
+                <div>
+                    <h4 class="m-0 fw-bold text-danger tracking-wider"><i class="fas fa-dumbbell"></i> DABAKH FITNESS</h4>
+                    <small class="text-uppercase text-muted" style="letter-spacing: 2px; font-size: 0.75rem;">Carte de Membre</small>
+                </div>
+                <span class="badge bg-danger text-uppercase px-3 py-2 rounded-pill shadow-sm" id="cardStatut" style="font-size: 0.8rem;">ACTIF</span>
+            </div>
+            
+            <div class="row align-items-center my-3 position-relative" style="z-index: 2;">
+                <div class="col-7">
+                    <div class="mb-2">
+                        <span class="d-block text-muted small uppercase" style="font-size: 0.7rem;">Nom & Prénom</span>
+                        <h5 class="fw-bold mb-0 text-truncate" id="cardNomPrenom" style="font-size: 1.1rem;">NOM Prénom</h5>
+                    </div>
+                    <div class="mb-2">
+                        <span class="d-block text-muted small" style="font-size: 0.7rem;">N° de Licence</span>
+                        <span class="font-monospace text-warning fw-bold" id="cardLicence" style="font-size: 0.95rem;">LIC-0000-000</span>
+                    </div>
+                    <div>
+                        <span class="d-block text-muted small" style="font-size: 0.7rem;">Téléphone</span>
+                        <span class="text-white-55 small" id="cardTel">-</span>
+                    </div>
+                </div>
+                <div class="col-5 text-center">
+                    <div class="bg-white p-2 rounded-3 shadow d-inline-block">
+                        <img id="cardQrImg" src="" alt="QR Code" style="width: 110px; height: 110px; display: block;">
+                    </div>
+                </div>
+            </div>
+
+            <div class="text-center mt-4 pt-2 border-top border-secondary text-white-50 position-relative" style="font-size: 0.7rem; z-index: 2;">
+                <i class="fas fa-map-marker-alt text-danger"></i> Sacré-Cœur 3 VDN, Dakar &bull; <i class="fas fa-phone text-danger"></i> Service Adhérent
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Ajout / Modification -->
     <div class="modal fade" id="adherentModal" tabindex="-1"><div class="modal-dialog"><div class="modal-content"><form action="" method="POST">
         <div class="modal-header"><h5 class="modal-title" id="modalTitle">Ajouter un Adhérent</h5></div>
         <div class="modal-body">
@@ -192,6 +272,20 @@ $base_url = "http://127.0.0.1:8000/donner_avis.php?numero_licence=";
             document.getElementById('adh_telephone').value = adh.telephone;
             document.getElementById('adh_statut').value = adh.statut || 'actif';
             new bootstrap.Modal(document.getElementById('adherentModal')).show();
+        }
+        function printCard(adh, qrSrc) {
+            document.getElementById('cardNomPrenom').innerText = adh.nom.toUpperCase() + ' ' + adh.prenom;
+            document.getElementById('cardLicence').innerText = adh.numero_licence;
+            document.getElementById('cardTel').innerText = adh.telephone || 'Non renseigné';
+            document.getElementById('cardStatut').innerText = (adh.statut || 'actif').toUpperCase();
+            document.getElementById('cardQrImg').src = qrSrc;
+
+            let printArea = document.getElementById('printArea');
+            printArea.classList.remove('d-none');
+            
+            window.print();
+
+            printArea.classList.add('d-none');
         }
     </script>
 </body>
