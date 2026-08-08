@@ -78,6 +78,7 @@ try {
 }
 
 $base_url = "http://127.0.0.1:8000/donner_avis.php?numero_licence=";
+$gym_phone = "+221 77 000 00 00"; // Téléphone officiel de Dabakh Fitness à ajuster si besoin
 ?>
 <!DOCTYPE html>
 <html lang="fr">
@@ -109,7 +110,7 @@ $base_url = "http://127.0.0.1:8000/donner_avis.php?numero_licence=";
             }
         }
         .member-card {
-            width: 420px;
+            width: 440px;
             border-radius: 20px;
             background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
             color: white;
@@ -128,6 +129,13 @@ $base_url = "http://127.0.0.1:8000/donner_avis.php?numero_licence=";
             background: rgba(220, 53, 69, 0.15);
             border-radius: 50%;
             z-index: 1;
+        }
+        .card-logo {
+            width: 45px;
+            height: 45px;
+            object-fit: cover;
+            border-radius: 50%;
+            border: 2px solid #dc3545;
         }
     </style>
 </head>
@@ -197,41 +205,44 @@ $base_url = "http://127.0.0.1:8000/donner_avis.php?numero_licence=";
         </div>
     </div>
 
-    <!-- Zone dédiée à l'affichage et l'impression de la carte modernisée -->
+    <!-- Zone dédiée à l'affichage et l'impression de la carte modernisée avec logo -->
     <div id="printArea" class="d-none my-4">
         <div class="member-card p-4 mx-auto">
             <div class="d-flex justify-content-between align-items-center border-bottom border-secondary pb-3 mb-3 position-relative" style="z-index: 2;">
-                <div>
-                    <h4 class="m-0 fw-bold text-danger tracking-wider"><i class="fas fa-dumbbell"></i> DABAKH FITNESS</h4>
-                    <small class="text-uppercase text-muted" style="letter-spacing: 2px; font-size: 0.75rem;">Carte de Membre</small>
+                <div class="d-flex align-items-center">
+                    <img src="logobest1.jpeg" alt="Logo" class="card-logo me-2 shadow-sm">
+                    <div>
+                        <h4 class="m-0 fw-bold text-danger tracking-wider" style="font-size: 1.1rem;">DABAKH FITNESS</h4>
+                        <small class="text-uppercase text-muted" style="letter-spacing: 1.5px; font-size: 0.65rem;">Carte de Membre</small>
+                    </div>
                 </div>
-                <span class="badge bg-danger text-uppercase px-3 py-2 rounded-pill shadow-sm" id="cardStatut" style="font-size: 0.8rem;">ACTIF</span>
+                <span class="badge bg-danger text-uppercase px-3 py-2 rounded-pill shadow-sm" id="cardStatut" style="font-size: 0.75rem;">ACTIF</span>
             </div>
             
             <div class="row align-items-center my-3 position-relative" style="z-index: 2;">
                 <div class="col-7">
                     <div class="mb-2">
-                        <span class="d-block text-muted small uppercase" style="font-size: 0.7rem;">Nom & Prénom</span>
-                        <h5 class="fw-bold mb-0 text-truncate" id="cardNomPrenom" style="font-size: 1.1rem;">NOM Prénom</h5>
+                        <span class="d-block text-muted small" style="font-size: 0.65rem; text-transform: uppercase;">Nom & Prénom</span>
+                        <h5 class="fw-bold mb-0 text-truncate" id="cardNomPrenom" style="font-size: 1.05rem;">NOM Prénom</h5>
                     </div>
                     <div class="mb-2">
-                        <span class="d-block text-muted small" style="font-size: 0.7rem;">N° de Licence</span>
-                        <span class="font-monospace text-warning fw-bold" id="cardLicence" style="font-size: 0.95rem;">LIC-0000-000</span>
+                        <span class="d-block text-muted small" style="font-size: 0.65rem;">N° de Licence</span>
+                        <span class="font-monospace text-warning fw-bold" id="cardLicence" style="font-size: 0.9rem;">LIC-0000-000</span>
                     </div>
                     <div>
-                        <span class="d-block text-muted small" style="font-size: 0.7rem;">Téléphone</span>
-                        <span class="text-white-55 small" id="cardTel">-</span>
+                        <span class="d-block text-muted small" style="font-size: 0.65rem;">Téléphone Adhérent</span>
+                        <span class="text-white-50 small" id="cardTel" style="font-size: 0.8rem;">-</span>
                     </div>
                 </div>
                 <div class="col-5 text-center">
                     <div class="bg-white p-2 rounded-3 shadow d-inline-block">
-                        <img id="cardQrImg" src="" alt="QR Code" style="width: 110px; height: 110px; display: block;">
+                        <img id="cardQrImg" src="" alt="QR Code" style="width: 105px; height: 105px; display: block;">
                     </div>
                 </div>
             </div>
 
-            <div class="text-center mt-4 pt-2 border-top border-secondary text-white-50 position-relative" style="font-size: 0.7rem; z-index: 2;">
-                <i class="fas fa-map-marker-alt text-danger"></i> Sacré-Cœur 3 VDN, Dakar &bull; <i class="fas fa-phone text-danger"></i> Service Adhérent
+            <div class="text-center mt-3 pt-2 border-top border-secondary text-white-50 position-relative" style="font-size: 0.68rem; z-index: 2;">
+                <i class="fas fa-phone text-danger"></i> <?= htmlspecialchars($gym_phone) ?> &bull; <i class="fas fa-map-marker-alt text-danger"></i> Sacré-Cœur 3 VDN, Dakar
             </div>
         </div>
     </div>
