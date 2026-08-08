@@ -4,11 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dabakh Fitness - Gestion Salle de Sport</title>
-<<<<<<< HEAD
-
-=======
-    
->>>>>>> 22260c2b04fdb4ab1186f5a6c5813140cdd7ade5
     <!-- CSS Corrigés -->
     <link href="assets/bootstrap/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
@@ -35,11 +30,7 @@
                     <li class="nav-item"><a class="nav-link" href="formateurs.php"><i class="fas fa-chalkboard-user"></i> Formateurs</a></li>
                     <li class="nav-item"><a class="nav-link" href="calendrier.php"><i class="fas fa-calendar-alt"></i> Calendrier</a></li>
                     <li class="nav-item"><a class="nav-link" href="paiements.php"><i class="fas fa-money-bill-wave"></i> Paiements</a></li>
-<<<<<<< HEAD
 
-=======
-                    
->>>>>>> 22260c2b04fdb4ab1186f5a6c5813140cdd7ade5
                     <!-- Menu Rapports Déroulant -->
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownRapports" role="button" data-bs-toggle="dropdown" aria-expanded="false">
@@ -52,21 +43,13 @@
                         </ul>
                     </li>
 
-                    <!-- Menu Boutique - Version Forcée -->
+                    <!-- Menu Boutique -->
                     <li class="nav-item dropdown">
-<<<<<<< HEAD
                         <a class="nav-link dropdown-toggle"
                            href="#"
                            id="navbarDropdownBoutique"
                            role="button"
                            data-bs-toggle="dropdown"
-=======
-                        <a class="nav-link dropdown-toggle" 
-                           href="#" 
-                           id="navbarDropdownBoutique" 
-                           role="button" 
-                           data-bs-toggle="dropdown" 
->>>>>>> 22260c2b04fdb4ab1186f5a6c5813140cdd7ade5
                            aria-expanded="false">
                            <i class="fas fa-shopping-cart"></i> Boutique
                         </a>
@@ -77,8 +60,7 @@
                         </ul>
                     </li>
 
-<<<<<<< HEAD
-                    <!-- Menu Avis & Suggestions (Intégré) -->
+                    <!-- Menu Avis & Suggestions -->
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle text-warning"
                            href="#"
@@ -95,26 +77,15 @@
                         </ul>
                     </li>
 
-=======
->>>>>>> 22260c2b04fdb4ab1186f5a6c5813140cdd7ade5
                     <li class="nav-item"><a class="nav-link" href="notifications.php"><i class="fas fa-bell"></i> Actus</a></li>
                     <li class="nav-item"><a class="nav-link" href="statistiques.php"><i class="fas fa-chart-line"></i> Stats</a></li>
                 </ul>
             </div>
         </div>
     </nav>
-<<<<<<< HEAD
 
-=======
-    
->>>>>>> 22260c2b04fdb4ab1186f5a6c5813140cdd7ade5
-    <!-- Script Bootstrap requis pour le menu mobile et les menus déroulants -->
+    <!-- Script Bootstrap requis -->
     <script src="assets/bootstrap/bootstrap.bundle.min.js"></script>
-    <!-- CDN de secours au cas où le fichier local ne se charge pas -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-<<<<<<< HEAD
 
-=======
-    
->>>>>>> 22260c2b04fdb4ab1186f5a6c5813140cdd7ade5
     <div class="main-content" style="margin-top: 100px;">
