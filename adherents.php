@@ -123,14 +123,22 @@ $base_url = "http://127.0.0.1:8000/donner_avis.php?numero_licence=";
                             $url = $base_url . urlencode($licence);
                             $qr_src = "https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=" . urlencode($url);
                             $safe_filename = 'QR_' . preg_replace('/[^A-Za-z0-9_\-]/', '_', $licence) . '.png';
+                            
+                            // Nettoyage et formatage du numéro de téléphone pour WhatsApp (suppression des espaces, tirets, etc.)
+                            $phone_clean = preg_replace('/[^0-9]/', '', $adh['telephone'] ?? '');
+                            $whatsapp_msg = urlencode("Bonjour " . $adh['prenom'] . ", voici votre QR Code Dabakh Fitness (Licence : " . $licence . ") : " . $qr_src);
+                            $whatsapp_url = "https://wa.me/" . $phone_clean . "?text=" . $whatsapp_msg;
                         ?>
                             <tr>
                                 <td><span class="badge bg-dark"><?= htmlspecialchars($licence) ?></span></td>
                                 <td><?= htmlspecialchars($adh['nom'] . ' ' . $adh['prenom']) ?></td>
-                                <td><?= htmlspecialchars($adh['email']) ?></td>
+                                <td><?= htmlspecialchars($adh['email']) ?><br><small class="text-muted"><?= htmlspecialchars($adh['telephone']) ?></small></td>
                                 <td>
                                     <img src="<?= $qr_src ?>" style="width: 50px;" class="border p-1">
-                                    <a href="<?= $qr_src ?>" download="<?= $safe_filename ?>" class="btn btn-sm btn-link"><i class="fas fa-download"></i></a>
+                                    <a href="<?= $qr_src ?>" download="<?= $safe_filename ?>" class="btn btn-sm btn-link" title="Télécharger le QR Code"><i class="fas fa-download"></i></a>
+                                    <?php if (!empty($phone_clean)): ?>
+                                        <a href="<?= $whatsapp_url ?>" target="_blank" class="btn btn-sm btn-success text-white" title="Envoyer par WhatsApp"><i class="fab fa-whatsapp"></i></a>
+                                    <?php endif; ?>
                                 </td>
                                 <td class="text-end">
                                     <button class="btn btn-sm btn-outline-primary" onclick='editAdherent(<?= json_encode($adh) ?>)'><i class="fas fa-edit"></i></button>
@@ -156,7 +164,7 @@ $base_url = "http://127.0.0.1:8000/donner_avis.php?numero_licence=";
             <input type="text" class="form-control mb-2" name="nom" id="adh_nom" placeholder="Nom" required>
             <input type="text" class="form-control mb-2" name="prenom" id="adh_prenom" placeholder="Prénom" required>
             <input type="email" class="form-control mb-2" name="email" id="adh_email" placeholder="Email" required>
-            <input type="text" class="form-control mb-2" name="telephone" id="adh_telephone" placeholder="Téléphone">
+            <input type="text" class="form-control mb-2" name="telephone" id="adh_telephone" placeholder="Téléphone (ex: 221770000000)">
             <select class="form-select" name="statut" id="adh_statut">
                 <option value="actif">Actif</option><option value="suspendu">Suspendu</option><option value="archive">Archivé</option>
             </select>
@@ -169,6 +177,11 @@ $base_url = "http://127.0.0.1:8000/donner_avis.php?numero_licence=";
         function resetForm() {
             document.getElementById('modalTitle').innerText = 'Ajouter un Adhérent';
             document.getElementById('adh_id').value = '';
+            document.getElementById('adh_nom').value = '';
+            document.getElementById('adh_prenom').value = '';
+            document.getElementById('adh_email').value = '';
+            document.getElementById('adh_telephone').value = '';
+            document.getElementById('adh_statut').value = 'actif';
         }
         function editAdherent(adh) {
             document.getElementById('modalTitle').innerText = 'Modifier l\'Adhérent';
@@ -177,6 +190,7 @@ $base_url = "http://127.0.0.1:8000/donner_avis.php?numero_licence=";
             document.getElementById('adh_prenom').value = adh.prenom;
             document.getElementById('adh_email').value = adh.email;
             document.getElementById('adh_telephone').value = adh.telephone;
+            document.getElementById('adh_statut').value = adh.statut || 'actif';
             new bootstrap.Modal(document.getElementById('adherentModal')).show();
         }
     </script>
