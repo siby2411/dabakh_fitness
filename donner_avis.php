@@ -43,6 +43,9 @@ try {
     $adherents_list = $stmt_list->fetchAll(PDO::FETCH_ASSOC);
 } catch (Exception $e) {}
 
+// Récupération de la licence passée dans l'URL (ex: ?numero_licence=... ou ?licence=...)
+$url_licence = trim($_GET['numero_licence'] ?? ($_GET['licence'] ?? ''));
+
 $message = '';
 $success = false;
 $debug_error = '';
@@ -52,8 +55,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $is_anonymous = isset($_POST['is_anonymous']) ? 1 : 0;
     $numero_licence = null;
 
-    if (!$is_anonymous && !empty($_POST['numero_licence'])) {
-        $numero_licence = trim($_POST['numero_licence']);
+    if (!$is_anonymous) {
+        // Priorité à la valeur postée, sinon on reprend celle de l'URL si elle était figée
+        $numero_licence = !empty($_POST['numero_licence']) ? trim($_POST['numero_licence']) : (!empty($_POST['url_licence']) ? trim($_POST['url_licence']) : null);
     }
 
     $note = intval($_POST['note'] ?? 5);
@@ -136,24 +140,33 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                             <div class="mb-4 bg-light p-3 rounded border">
                                 <label class="form-label fw-bold text-dark"><i class="fas fa-id-card text-danger"></i> Identification de l'Adhérent</label>
                                 
-                                <div class="form-check mb-3">
-                                    <input class="form-check-input" type="checkbox" id="is_anonymous" name="is_anonymous" value="1">
-                                    <label class="form-check-label fw-semibold text-secondary" for="is_anonymous">
-                                        Rester Anonyme (Ne pas lier à mon profil)
-                                    </label>
-                                </div>
+                                <?php if (!empty($url_licence)): ?>
+                                    <!-- Si un QR code avec licence est scanné, on verrouille l'adhérent proprement -->
+                                    <input type="hidden" name="url_licence" value="<?= htmlspecialchars($url_licence) ?>">
+                                    <div class="alert alert-success py-2 mb-0">
+                                        <i class="fas fa-check-circle"></i> Connecté via votre QR code (Licence : <strong><?= htmlspecialchars($url_licence) ?></strong>)
+                                    </div>
+                                <?php else: ?>
+                                    <!-- Mode normal sans QR code spécifique -->
+                                    <div class="form-check mb-3">
+                                        <input class="form-check-input" type="checkbox" id="is_anonymous" name="is_anonymous" value="1">
+                                        <label class="form-check-label fw-semibold text-secondary" for="is_anonymous">
+                                            Rester Anonyme (Ne pas lier à mon profil)
+                                        </label>
+                                    </div>
 
-                                <div id="selectAdherentContainer">
-                                    <select name="numero_licence" id="numero_licence" class="form-select">
-                                        <option value="">-- Sélectionnez votre profil (Nom, Prénom & Licence) --</option>
-                                        <?php foreach ($adherents_list as $adh): ?>
-                                            <option value="<?= htmlspecialchars($adh['numero_licence']) ?>">
-                                                <?= htmlspecialchars($adh['nom'] . ' ' . $adh['prenom'] . ' [Licence: ' . $adh['numero_licence'] . ']') ?>
-                                            </option>
-                                        <?php endforeach; ?>
-                                    </select>
-                                    <div class="form-text">Choisissez votre nom dans la liste déroulante ou cochez "Rester Anonyme".</div>
-                                </div>
+                                    <div id="selectAdherentContainer">
+                                        <select name="numero_licence" id="numero_licence" class="form-select">
+                                            <option value="">-- Sélectionnez votre profil (Nom, Prénom & Licence) --</option>
+                                            <?php foreach ($adherents_list as $adh): ?>
+                                                <option value="<?= htmlspecialchars($adh['numero_licence']) ?>">
+                                                    <?= htmlspecialchars($adh['nom'] . ' ' . $adh['prenom'] . ' [Licence: ' . $adh['numero_licence'] . ']') ?>
+                                                </option>
+                                            <?php endforeach; ?>
+                                        </select>
+                                        <div class="form-text">Choisissez votre nom dans la liste déroulante ou cochez "Rester Anonyme".</div>
+                                    </div>
+                                <?php endif; ?>
                             </div>
 
                             <!-- Note Globale -->
